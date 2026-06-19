@@ -22,6 +22,10 @@ export class JwtService {
             return jwt.sign(tokenPayload, config.PRIVATE_KEY, { algorithm: 'RS256' });
         }
 
+        if (config.ALGORITHM !== 'HS256') {
+            throw new Error(`Algoritmo no soportado: ${config.ALGORITHM}`);
+        }
+
         if (!config.JWT_SECRET) {
             throw new Error('El secreto JWT no esta configurado');
         }
@@ -41,6 +45,10 @@ export class JwtService {
             }
 
             return jwt.verify(token, config.PUBLIC_KEY, { algorithms: ['RS256'] });
+        }
+
+        if (config.ALGORITHM !== 'HS256') {
+            throw new Error(`Algoritmo no soportado: ${config.ALGORITHM}`);
         }
 
         if (!config.JWT_SECRET) {

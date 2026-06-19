@@ -10,7 +10,14 @@ export const authMiddleware = (req, res, next) => {
         });
     }
 
-    const token = authHeader.split(' ')[1];
+    const [scheme, token] = authHeader.split(' ');
+
+    if (scheme !== 'Bearer' || !token) {
+        return res.status(401).json({
+            error: 'Token ausente',
+            message: 'Debe enviar el encabezado Authorization con formato Bearer <token>'
+        });
+    }
 
     try {
         req.user = JwtService.verifyToken(token);
@@ -30,7 +37,7 @@ export const authMiddleware = (req, res, next) => {
             });
         }
 
-        return res.status(500).json({
+        return res.status(403).json({
             error: 'Error de autenticacion',
             message: error.message
         });

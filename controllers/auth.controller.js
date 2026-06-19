@@ -5,7 +5,7 @@ export class AuthController {
      * Simula un servidor de autenticación que genera un token.
      */
     static async generateToken(req, res) {
-        const { username, password } = req.body;
+        const { username, password } = req.body ?? {};
 
         if (username !== 'admin' || password !== '123456') {
             return res.status(401).json({

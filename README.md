@@ -77,9 +77,13 @@ El token expira en 60 segundos. Despues de ese tiempo, los servicios responden c
 
 ## Analisis tecnico: Refresh Tokens
 
+### Pregunta 1: Dado que los JWT son Stateless y en nuestra practica expiran en 1 minuto, de que manera la implementacion teorica de un Refresh Token solucionaria la experiencia del usuario sin comprometer la seguridad de los servicios distribuidos?
+
 Los JWT de acceso son stateless y, en esta practica, expiran en un minuto. Esta expiracion corta reduce el impacto de un token robado, porque el atacante tendria una ventana de uso muy limitada. Sin embargo, para el usuario seria incomodo iniciar sesion nuevamente cada minuto. Un Refresh Token solucionaria esa experiencia permitiendo solicitar nuevos Access Tokens sin volver a enviar credenciales.
 
 La idea recomendada es separar responsabilidades: el Access Token viaja hacia los microservicios y se valida de forma autonoma con la llave publica; el Refresh Token solo se envia al servidor de identidad cuando el cliente necesita renovar la sesion. Asi, los microservicios siguen siendo stateless y no necesitan consultar una base central para cada peticion.
+
+### Pregunta 2: En que lugar del ecosistema Cliente o Servidor se deberia almacenar y gestionar el ciclo de vida del Refresh Token segun las buenas practicas analizadas sobre la persistencia de cookies seguras?
 
 Para no comprometer la seguridad, el Refresh Token debe tener mayor proteccion que el Access Token. Puede almacenarse del lado del cliente en una cookie segura con las banderas `HttpOnly`, `Secure` y `SameSite`, evitando que JavaScript lo lea directamente y reduciendo riesgos de XSS. El servidor de identidad debe gestionar su ciclo de vida: emision, rotacion, expiracion, revocacion y deteccion de reutilizacion.
 

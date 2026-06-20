@@ -37,9 +37,6 @@ export const authMiddleware = (req, res, next) => {
             });
         }
 
-        return res.status(403).json({
-            error: 'Error de autenticacion',
-            message: error.message
-        });
+        return next(error);
     }
 };

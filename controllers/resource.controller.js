@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node';
+
 export class ResourceController {
     /**
      * Simula un recurso privado del Microservicio Alpha.
@@ -10,10 +12,22 @@ export class ResourceController {
      * Simula un recurso privado del Microservicio Beta.
      */
     static getBetaPrivateData(req, res) {
-        return res.json({
-            service: 'service-beta',
-            message: 'Acceso concedido al recurso privado del Servicio Beta',
-            authenticated_user: req.user
-        });
+        try {
+            throw new Error('Fallo interno simulado en service-beta');
+        } catch (error) {
+            Sentry.withScope(scope => {
+                scope.setTag('service', 'service-beta');
+                scope.setTag('error_type', 'operational');
+                scope.setExtra('userId', req.user.sub);
+                scope.setExtra('route', req.originalUrl);
+                scope.setExtra('method', req.method);
+                Sentry.captureException(error);
+            });
+
+            return res.status(500).json({
+                error: 'Error operacional',
+                message: 'Fallo interno registrado en service-beta'
+            });
+        }
     }
 }

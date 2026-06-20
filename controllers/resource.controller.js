@@ -3,11 +3,7 @@ export class ResourceController {
      * Simula un recurso privado del Microservicio Alpha.
      */
     static getAlphaPrivateData(req, res) {
-        return res.json({
-            service: 'service-alpha',
-            message: 'Acceso concedido al recurso privado del Servicio Alpha',
-            authenticated_user: req.user
-        });
+        throw new Error('Conexion perdida con la BDD en service-alpha');
     }
 
     /**
